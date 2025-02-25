@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.yaml.snakeyaml.Yaml
 import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import java.net.URLClassLoader
 import java.util.jar.JarFile
@@ -19,7 +20,9 @@ fun main() {
         config.outputStream().use { inputStream.copyTo(it) }
     } else {
         var yaml = Yaml()
-        var config_ = yaml.load(inputStream) as Map<String, Any>
+
+        var config_ = yaml.load(FileInputStream(File("config.yml"))) as Map<String, Any>
+
 
         val jda = JDABuilder.createDefault(config_["Token"].toString())
             .enableIntents(GatewayIntent.GUILD_MESSAGES)
