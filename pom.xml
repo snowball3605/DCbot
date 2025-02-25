@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>Loader</module>
-        <module>plugins</module>
+        <module>Bot-info</module>
     </modules>
 
     <properties>

@@ -1,8 +1,10 @@
 package snow
 
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.yaml.snakeyaml.Yaml
+import snow.PluginManager.plugins
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -11,8 +13,6 @@ import java.util.jar.JarFile
 
 
 fun main() {
-    PluginManager.loadPlugins(File("Plug-in"))
-    PluginManager.enablePlugins()
 
     var config = File("config.yml")
     val inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.yml")
@@ -29,6 +29,7 @@ fun main() {
             .build()
 
         jda.awaitReady()
+        PluginManager.loadPlugins(File("Plug-in"), jda)
 
     }
 }
@@ -38,7 +39,7 @@ fun main() {
 object PluginManager {
     private val plugins = mutableListOf<PluginBase>()
 
-    fun loadPlugins(pluginsDir: File) {
+    fun loadPlugins(pluginsDir: File, jda: JDA) {
         if (!pluginsDir.exists()) {
             pluginsDir.mkdirs()
             println("Created plugins directory: ${pluginsDir.path}")
@@ -69,15 +70,12 @@ object PluginManager {
                         }
                             val pluginInstance = pluginClass.getDeclaredConstructor().newInstance() as PluginBase
                             plugins.add(pluginInstance)
+                            pluginInstance.onStart(jda)
                             println("Loaded plugin: ${config["name"]} (Version: ${config["version"]})")
 
             } catch (e: Exception) {
                 println("Failed to load plugin from ${jarFile.name}: ${e.message}")
             }
         }
-    }
-
-    fun enablePlugins() {
-        plugins.forEach { it.onStart() }
     }
 }
