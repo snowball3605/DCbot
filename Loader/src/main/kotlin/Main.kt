@@ -38,7 +38,7 @@ object PluginManager {
 
                     val mainClass = config["main"] as? String
                     if (mainClass == null) {
-                        println("No 'main' class specified in plugin.yml for ${jarFile.name}")
+                        println("No class specified in plugin.yml for ${jarFile.name}")
                     }
                         val classLoader = URLClassLoader(arrayOf(jarFile.toURI().toURL()))
                         val pluginClass = classLoader.loadClass(mainClass)
