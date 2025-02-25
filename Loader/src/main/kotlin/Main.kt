@@ -1,5 +1,7 @@
 package snow
 
+import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.requests.GatewayIntent
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.InputStream
@@ -10,6 +12,22 @@ import java.util.jar.JarFile
 fun main() {
     PluginManager.loadPlugins(File("Plug-in"))
     PluginManager.enablePlugins()
+
+    var config = File("config.yml")
+    val inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.yml")
+    if (!config.exists()) {
+        config.outputStream().use { inputStream.copyTo(it) }
+    } else {
+        var yaml = Yaml()
+        var config_ = yaml.load(inputStream) as Map<String, Any>
+
+        val jda = JDABuilder.createDefault(config_["Token"].toString())
+            .enableIntents(GatewayIntent.GUILD_MESSAGES)
+            .build()
+
+        jda.awaitReady()
+
+    }
 }
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
