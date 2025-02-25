@@ -1,0 +1,5 @@
+main: snow.Plugin
+name: Test
+version: 1.0
+description: A simple plugin example.
+author: Raistey

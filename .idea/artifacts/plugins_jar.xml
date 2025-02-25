@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="plugins:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/plugins_jar</output-path>
+    <root id="archive" name="plugins.jar">
+      <element id="module-output" name="plugins" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/13.0/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib/2.1.10/kotlin-stdlib-2.1.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/2.4/snakeyaml-2.4.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
