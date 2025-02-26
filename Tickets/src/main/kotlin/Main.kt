@@ -28,7 +28,7 @@ class Tickets: PluginBase() {
         return listOf(
             object: ListenerAdapter() {
                 override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
-                    if (event.name == "Tickets") {
+                    if (event.name == "tickets") {
                         event.replyEmbeds(EmbedBuilder()
                             .setTitle("Ticket office")
                             .setDescription("如有問題請點擊以下按鈕 \nIf you have any problem, please click the button below \nご質問がある場合は、下のボタンをクリックしてください。")
@@ -56,7 +56,11 @@ class Tickets: PluginBase() {
                         guild.getMember(event.user)!!,
                         listOf(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND),
                         null
-                    ).queue()
+                    ).queue { channel -> channel.sendMessageEmbeds(EmbedBuilder()
+                        .setTitle("Problem opening Ticket")
+                        .setDescription("請發出你的問題 \nPlease send the problem in the channel \nご質問をお送りください")
+                        .setFooter(event.jda.selfUser.name).build()
+                    ).queue { channel.sendMessage("Sender:" + event.user.asMention).queue()}}
             }
         }
     }
