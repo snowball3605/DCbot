@@ -2,6 +2,8 @@ package snow
 
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.yaml.snakeyaml.Yaml
 import snow.PluginManager.plugins
@@ -9,6 +11,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.net.URLClassLoader
+import java.util.*
 import java.util.jar.JarFile
 
 
@@ -46,6 +49,9 @@ object PluginManager {
             return
         }
 
+        val commands = mutableListOf<CommandData>()
+        val eventListeners = mutableListOf<ListenerAdapter>()
+
         pluginsDir.listFiles { file -> file.extension == "jar" }?.forEach { jarFile ->
             try {
                 val jar = JarFile(jarFile)
@@ -70,9 +76,13 @@ object PluginManager {
                         }
                             val pluginInstance = pluginClass.getDeclaredConstructor().newInstance() as PluginBase
                             plugins.add(pluginInstance)
+                            commands.addAll(pluginInstance.Commands())
+                            eventListeners.addAll(pluginInstance.EventListeners())
                             pluginInstance.onStart(jda)
                             println("Loaded plugin: ${config["name"]} (Version: ${config["version"]})")
 
+                jda.updateCommands().addCommands(commands).queue()
+                eventListeners.forEach { jda.addEventListener(it) }
             } catch (e: Exception) {
                 println("Failed to load plugin from ${jarFile.name}: ${e.message}")
             }
