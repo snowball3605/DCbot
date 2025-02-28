@@ -1,0 +1,3 @@
+name: GithubAccess
+main: snow.GithubAccess
+version: 1.11
