@@ -17,7 +17,6 @@ class BotInfo: PluginBase() {
     override fun onStart(jda: JDA) {
 
         jda.presence.activity = Activity.playing("huh?")
-        jda.awaitReady()
     }
 
     override fun Commands(): List<CommandData> {

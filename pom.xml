@@ -13,6 +13,7 @@
         <module>Bot-info</module>
         <module>Tickets</module>
         <module>GithubAccess</module>
+        <module>ForbiddenWordDetection</module>
     </modules>
 
     <properties>

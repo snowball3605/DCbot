@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 class Tickets: PluginBase() {
     override fun onStart(jda: JDA) {
-        jda.awaitReady()
     }
 
     override fun Commands(): List<CommandData> {

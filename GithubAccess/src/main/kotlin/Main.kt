@@ -10,14 +10,30 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import org.yaml.snakeyaml.Yaml
 import snow.GithubAccess.Config.githubUsername
+import snow.GithubAccess.e.config
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 class GithubAccess : PluginBase() {
+    object e {
+        val config = File("Plug-in/GithubAccess/key.yml")
+    }
+
     override fun onStart(jda: JDA) {
-        jda.awaitReady()
+        val folder = File("Plug-in/GithubAccess")
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+        val input = this::class.java.classLoader.getResourceAsStream("key.yml") ?: throw FileNotFoundException("key.yml not found in resources")
+        if (!config.exists()) {
+            config.outputStream().use { input.copyTo(it) }
+        }
 
     }
     object Config {
@@ -36,27 +52,25 @@ class GithubAccess : PluginBase() {
             object : ListenerAdapter() {
                 override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
                     if (event.name == "github-access") {
-                         githubUsername = event.getOption(githubUsername.toString())?.asString
-                        event.guild?.upsertCommand("github-access", "Access github repositories")
-                            ?.addOption(OptionType.STRING, githubUsername.toString(), "github user name", true)
-                            ?.queue()
+                         githubUsername = event.getOption("username")?.asString
 
                         val client = OkHttpClient()
-                        val token = "Are you stupid? Why are you watch my token"
-
-                        var url = "https://api.github.com/users/${githubUsername}"
+                        val yaml = Yaml()
+                        val token = yaml.load(FileInputStream(config)) as Map<String, Any>
+                            // d
+                            var url = "https://api.github.com/users/${githubUsername}"
                         val request = Request.Builder()
                             .url(url)
-                            .addHeader("Authorization", "token $token")
+                            .addHeader("Authorization", "token ${token["Github_API_Token"].toString()}")
                             .addHeader("Accept", "application/vnd.github.v3+json")
                             .build()
 
                         try{
-                            val response = client.newCall(request).execute()
+                            var response = client.newCall(request).execute()
                             if (!response.isSuccessful) throw IOException("Unexpected code $response")
                             if (response.body == null) throw IOException("Body null error occurred")
                             event.reply(response.body.string()).queue()
-                            println(url + "\n" + response.body.string())
+                            response.close()
                         } catch (e: IOException) {
                             e.printStackTrace()
                         }

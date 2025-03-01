@@ -29,6 +29,7 @@ fun main() {
 
         val jda = JDABuilder.createDefault(config_["Token"].toString())
             .enableIntents(GatewayIntent.GUILD_MESSAGES)
+            .enableIntents(GatewayIntent.MESSAGE_CONTENT)
             .build()
 
         jda.awaitReady()
