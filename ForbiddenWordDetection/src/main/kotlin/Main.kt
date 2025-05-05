@@ -2,9 +2,11 @@ package snow
 
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.yaml.snakeyaml.Yaml
 import snow.Main.Config.config
+import snow.Main.Config.text
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -14,6 +16,9 @@ import java.io.FileNotFoundException
 class Main : PluginBase() {
     object Config {
         val config = File("Plug-in/ForbiddenWordDetection/word.yml")
+        val Yaml = Yaml()
+        var config_ = Yaml.load(FileInputStream(config)) as Map<String, Any>
+        var text = config_["Word"] as List<String>
     }
 
     override fun onStart(jda: JDA) {
@@ -27,16 +32,20 @@ class Main : PluginBase() {
         }
     }
 
-    override fun EventListeners(): List<ListenerAdapter> {
+    override fun EventListeners(): List<ListenerAdapter> {  
         return listOf(
             object : ListenerAdapter() {
                 override fun onMessageReceived(event: MessageReceivedEvent) {
-                    val Yaml = Yaml()
-
-                    var config_ = Yaml.load(FileInputStream(config)) as Map<String, Any>
-
-                    var text = config_["Word"] as List<String>
-
+                    for (item in text) {
+                        if (event.message.toString().contains(item, ignoreCase = true)) {
+                            event.message.delete().queue()
+                            event.channel.sendMessage("I have deleted the banned words").queue()
+                        }
+                    }
+                }
+            },
+            object : ListenerAdapter() {
+                override fun onMessageUpdate(event: MessageUpdateEvent) {
                     for (item in text) {
                         if (event.message.toString().contains(item, ignoreCase = true)) {
                             event.message.delete().queue()

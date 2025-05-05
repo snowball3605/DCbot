@@ -14,6 +14,7 @@
         <module>Tickets</module>
         <module>GithubAccess</module>
         <module>ForbiddenWordDetection</module>
+        <module>DynamicVoice</module>
     </modules>
 
     <properties>

@@ -57,11 +57,10 @@ class GithubAccess : PluginBase() {
                         val client = OkHttpClient()
                         val yaml = Yaml()
                         val token = yaml.load(FileInputStream(config)) as Map<String, Any>
-                            // d
-                            var url = "https://api.github.com/users/${githubUsername}"
+                        var url = "https://api.github.com/users/${githubUsername}"
                         val request = Request.Builder()
                             .url(url)
-                            .addHeader("Authorization", "token ${token["Github_API_Token"].toString()}")
+                            .addHeader("Authorization", "token ${token["Github_API_Token"]}")
                             .addHeader("Accept", "application/vnd.github.v3+json")
                             .build()
 
